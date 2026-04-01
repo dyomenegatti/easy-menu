@@ -1,6 +1,6 @@
 <template>
-  <v-layout>
-    <v-app-bar v-if="mobile">
+  <div>
+    <v-app-bar v-show="mobile">
       <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
     </v-app-bar>
 
@@ -13,8 +13,8 @@
       <div class="d-flex align-center ga-4 ma-5">
         <v-icon
           :icon="icon"
-          color="deep-orange-darken-2"
-          class="pa-5 bg-deep-orange-lighten-4 rounded-lg"
+          color="primary"
+          class="pa-5 bg-secondary rounded-lg"
         ></v-icon>
 
         <div class="d-flex flex-column align-start">
@@ -64,6 +64,7 @@
             link
             rounded="lg"
             class="mx-3 my-1"
+            @click="theme.toggle()"
           />
           <v-list-item
             prepend-icon="mdi-logout"
@@ -71,18 +72,20 @@
             link
             rounded="lg"
             class="mx-3 my-1"
-            base-color="red-darken-4"
+            base-color="error"
             @click="toLoginPage"
           />
         </v-list>
       </template>
     </v-navigation-drawer>
-  </v-layout>
+  </div>
 </template>
 
 <script setup>
+import { watch } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { useDisplay } from "vuetify";
+import { useTheme } from 'vuetify';
 
 const {
   items, 
@@ -105,12 +108,18 @@ const {
 const router = useRouter();
 const route = useRoute();
 
+const theme = useTheme();
+
 const { mobile } = useDisplay();
 
 const drawer = defineModel({
   type: Boolean,
   default: true,
 });
+
+watch(mobile, (isMobile) => {
+  drawer.value = !isMobile;
+}, { immediate: true });
 
 function navigateTo(target) {
   if (!target) return;
@@ -128,13 +137,13 @@ function isItemActive(item) {
 
 function getItemColor(isHovering, item) {
   return isHovering || isItemActive(item)
-    ? "deep-orange-darken-1"
-    : "gray-darken-4";
+    ? "primary"
+    : "text";
 }
 
 function getItemClass(isHovering, item) {
   return isHovering || isItemActive(item)
-    ? "bg-deep-orange-lighten-5"
+    ? "bg-backgroundElements"
     : "";
 }
 </script>
